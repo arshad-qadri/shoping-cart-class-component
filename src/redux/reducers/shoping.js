@@ -92,16 +92,22 @@ const product = (state = initState, action) => {
       };
     case "DEC_QTY":
       let decQty = state.cart.find((e) => e.id === action.payload);
+      let removeItems = state.cart.filter((e) => e.id !== action.payload);
+      let newTotals = state.total - decQty.price * decQty.qty;
       let dec = state.total - decQty.price;
-      if (decQty.qty > 1) {
-        decQty.qty -= 1;
+      decQty.qty -= 1;
+      if (decQty.qty < 1) {
         return {
           ...state,
-          total: dec,
+          cart: removeItems,
+          total: newTotals,
         };
-      } else {
-        return state;
       }
+      return {
+        ...state,
+
+        total: dec,
+      };
 
     default:
       return state;
